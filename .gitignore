@@ -1,0 +1,55 @@
+# Fichiers et dossiers générés par CMake
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Fichiers spécifiques à CLion
+.idea/
+
+# Fichiers spécifiques à l'utilisateur (si applicable)
+*.user
+*.user.*
+
+# Fichiers de construction courants
+build/
+build-*/
+out/
+bin/
+lib/
+
+# Fichiers d'exécutables et bibliothèques (ajustez selon vos extensions)
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+
+# Fichiers objets et de dépendances
+*.o
+*.obj
+*.lo
+*.slo
+*.d
+
+# Fichiers de logs
+*.log
+
+# Fichiers temporaires et de sauvegarde
+*~
+*.swp
+*.swo
+
+# Fichiers spécifiques à certains outils ou systèmes
+.DS_Store  # macOS
+Thumbs.db  # Windows
+
+# Fichiers Python compilés (si vous utilisez Python dans votre projet)
+*.pyc
+__pycache__/
+
+# Environnements virtuels Python (si applicable)
+venv/
+.venv/
