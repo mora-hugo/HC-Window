@@ -1,12 +1,28 @@
 #include "GLFWWindow.h"
 #include <iostream>
 #include <GLFW/glfw3.h>
-
-        HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::string & windowName)
+#include "Asserts.h"
+HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::string & windowName)
                 : Window(), m_windowSize(windowSize), m_windowName(windowName), m_window(nullptr) {
-            if (!glfwInit()) {
-                std::cerr << "Failed to initialize GLFW" << std::endl;
-            }
+            Initialize();
+        }
+
+        HC::Window::GLFWWindow::~GLFWWindow() {
+            GLFWWindow::Close();
+        }
+
+        void HC::Window::GLFWWindow::Initialize() {
+            HC_ASSERT_ALWAYS(glfwInit(), "Failed to initialize GLFW");
+
+        #if HC_GRAPHIC_API_OPENGL
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        #ifdef DEBUG_MODE
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+        #endif
+        #endif
 
             m_window = glfwCreateWindow(m_windowSize.x, m_windowSize.y, m_windowName.c_str(), nullptr, nullptr);
 
@@ -14,13 +30,19 @@
                 std::cerr << "Failed to create GLFW window" << std::endl;
                 glfwTerminate();
             }
+
+
+            GLFWWindow::MakeContextCurrent();
+            SetVSync(true);
+            SetCursorMode(CursorMode::Normal);
         }
 
-        HC::Window::GLFWWindow::~GLFWWindow() {
-            Close();
-        }
 
         void HC::Window::GLFWWindow::Close() {
+#if HC_USE_IMGUI
+    DestroyIMGUI();
+#endif
+
             if (m_window) {
                 glfwDestroyWindow(m_window);
                 m_window = nullptr;
@@ -122,3 +144,53 @@
         void HC::Window::GLFWWindow::MakeContextCurrent() {
             glfwMakeContextCurrent(m_window);
         }
+#if HC_USE_IMGUI
+    void HC::Window::GLFWWindow::InitializeIMGUI() {
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGuiIO& io = ImGui::GetIO();
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+
+#if HC_GRAPHIC_API_OPENGL
+            // Setup Platform/Renderer backends
+            ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+            ImGui_ImplOpenGL3_Init();
+#elif HC_GRAPHIC_API_VULKAN
+            // Do Vulkan initialization here
+#endif
+    }
+
+
+void HC::Window::GLFWWindow::DestroyIMGUI() {
+#if HC_GRAPHIC_API_OPENGL
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+#elif HC_GRAPHIC_API_VULKAN
+            // Do Vulkan cleaning here
+#endif
+            ImGui::DestroyContext();
+
+    }
+
+    void HC::Window::GLFWWindow::BeforeIMGUIRendering() {
+#if HC_GRAPHIC_API_OPENGL
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+#elif HC_GRAPHIC_API_VULKAN
+            // Do Vulkan stuff here
+#endif
+            ImGui::NewFrame();
+            ImGui::ShowDemoWindow();
+    }
+
+    void HC::Window::GLFWWindow::AfterIMGUIRendering() {
+            ImGui::Render();
+#if HC_GRAPHIC_API_OPENGL
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#elif HC_GRAPHIC_API_VULKAN
+            // Do Vulkan stuff here
+#endif
+    }
+#endif

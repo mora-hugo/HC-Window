@@ -47,6 +47,17 @@ namespace HC::Window {
             virtual void SwapBuffers() = 0;
             virtual void MakeContextCurrent() = 0;
 
+#if HC_USE_IMGUI
+        virtual void BeforeIMGUIRendering() = 0;
+        virtual void AfterIMGUIRendering() = 0;
+        virtual void InitializeIMGUI() = 0;
+#endif
+
+    private:
+#if HC_USE_IMGUI
+        virtual void DestroyIMGUI() = 0;
+#endif
+
 
     };
 

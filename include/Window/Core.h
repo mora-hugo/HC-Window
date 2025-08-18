@@ -19,4 +19,4 @@
 #endif
 
 #include <cstdint>
-using WindowHandle = uintptr_t;
+using WindowHandle = void*;

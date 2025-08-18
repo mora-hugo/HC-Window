@@ -17,3 +17,4 @@ if(WIN32 AND HC_WINDOW_LINKING STREQUAL "SHARED")
         )
     endforeach()
 endif()
+

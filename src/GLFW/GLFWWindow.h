@@ -1,8 +1,30 @@
 #pragma once
+
+#if HC_GRAPHIC_API_OPENGL
+#define GLFW_INCLUDE_NONE
+       #include<glad/glad.h>
+#elif HC_GRAPHIC_API_VULKAN
+    // import vulkan stuff
+#endif
+#if HC_USE_IMGUI
+    #if HC_GRAPHIC_API_OPENGL
+
+       #include <backends/imgui_impl_opengl3.h>
+    #elif HC_GRAPHIC_API_VULKAN
+
+    #elif HC_GRAPHIC_API_DX12
+
+    #endif
+    #include <imgui.h>
+    #include <backends/imgui_impl_glfw.h>
+
+#endif
+
 #include "Window/Window.h"
 #include "glm/ext/vector_uint2.hpp"
 #include <GLFW/glfw3.h>
 #include <string>
+
 
 namespace HC::Window {
 
@@ -47,13 +69,26 @@ namespace HC::Window {
 
         void MakeContextCurrent() override;
 
+#if HC_USE_IMGUI
+        void BeforeIMGUIRendering() override;
+        void AfterIMGUIRendering() override;
+        void InitializeIMGUI() override;
+
+#endif
+
+    private:
+    void Initialize();
+#if HC_USE_IMGUI
+        void DestroyIMGUI() override;
+#endif
     private:
         GLFWwindow* m_window;
         glm::uvec2 m_windowSize;
         std::string m_windowName;
         CursorMode m_cursorMode;
         WindowMode m_windowMode;
-        bool m_vsyncEnabled;
+        bool m_vsyncEnabled{};
+
     };
 
 } // namespace HC::Window
