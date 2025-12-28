@@ -1,4 +1,5 @@
 #pragma once
+#include <Core.h>
 #include <memory>
 #include <glm/vec2.hpp>
 #include <string>
@@ -13,7 +14,7 @@ namespace HC::Window {
 
     class HC_WINDOW_API WindowFactory {
         public:
-            static std::unique_ptr<Window> CreateWindow(const WindowParams& params);
+            static Ref<Window> CreateWindow(const WindowParams& params);
 
             WindowFactory() = delete;
             WindowFactory(const WindowFactory&) = delete;

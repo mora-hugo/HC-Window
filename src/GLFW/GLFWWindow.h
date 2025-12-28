@@ -41,19 +41,19 @@ namespace HC::Window {
 
         [[nodiscard]] WindowHandle GetNativeHandle() const override;
 
-        bool IsVSyncEnabled() const override;
+        [[nodiscard]] bool IsVSyncEnabled() const override;
 
-        glm::uvec2 GetSize() const override;
+        [[nodiscard]] glm::uvec2 GetSize() const override;
 
         std::string &GetWindowName() override;
 
-        glm::uvec2 GetPosition() const override;
+        [[nodiscard]] glm::uvec2 GetPosition() const override;
 
-        WindowMode GetWindowMode() const override;
+        [[nodiscard]] WindowMode GetWindowMode() const override;
 
-        bool IsFullscreen() const override;
+        [[nodiscard]] bool IsFullscreen() const override;
 
-        CursorMode GetCursorMode() const override;
+        [[nodiscard]] CursorMode GetCursorMode() const override;
 
         void SetSize(const glm::uvec2 &size) override;
 

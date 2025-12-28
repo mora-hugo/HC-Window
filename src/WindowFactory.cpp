@@ -14,13 +14,13 @@
 
 namespace HC::Window {
 
-    std::unique_ptr<Window> WindowFactory::CreateWindow(const WindowParams& params) {
+    Ref<Window> WindowFactory::CreateWindow(const WindowParams& params) {
 #ifdef HC_WINDOW_BACKEND_GLFW
-        return std::make_unique<GLFWWindow>(params.size, params.name);
+        return CreateRef<GLFWWindow>(params.size, params.name);
 #elif defined(HC_WINDOW_BACKEND_SDL)
-        return std::make_unique<SDLWindow>(params.size, params.name);
+        return CreateRef<SDLWindow>(params.size, params.name);
 #elif defined(HC_WINDOW_BACKEND_WIN32)
-        return std::make_unique<Win32Window>(params.size, params.name);
+        return CreateRef<Win32Window>(params.size, params.name);
 #else
 #error "No window backend defined!"
 #endif

@@ -1,9 +1,10 @@
 #include "GLFWWindow.h"
 #include <iostream>
 #include <GLFW/glfw3.h>
-#include "Asserts.h"
+#include "Core.h"
 HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::string & windowName)
-                : Window(), m_windowSize(windowSize), m_windowName(windowName), m_window(nullptr) {
+                : Window(), m_windowSize(windowSize), m_windowName(windowName), m_window(nullptr), m_cursorMode(CursorMode::Normal),
+                  m_windowMode(WindowMode::Windowed), m_vsyncEnabled(false) {
             Initialize();
         }
 
@@ -12,7 +13,7 @@ HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::str
         }
 
         void HC::Window::GLFWWindow::Initialize() {
-            HC_ASSERT_ALWAYS(glfwInit(), "Failed to initialize GLFW");
+            HC_ASSERT(glfwInit(), "Failed to initialize GLFW");
 
         #if HC_GRAPHIC_API_OPENGL
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -24,15 +25,21 @@ HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::str
         #endif
         #endif
 
-            m_window = glfwCreateWindow(m_windowSize.x, m_windowSize.y, m_windowName.c_str(), nullptr, nullptr);
+            m_window = glfwCreateWindow(static_cast<int>(m_windowSize.x), static_cast<int>(m_windowSize.y), m_windowName.c_str(), nullptr, nullptr);
 
             if (!m_window) {
                 std::cerr << "Failed to create GLFW window" << std::endl;
                 glfwTerminate();
             }
 
-
             GLFWWindow::MakeContextCurrent();
+            
+            glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+                #if HC_GRAPHIC_API_OPENGL
+                glViewport(0, 0, width, height);
+                #endif
+            });
+            
             SetVSync(true);
             SetCursorMode(CursorMode::Normal);
         }
@@ -75,7 +82,7 @@ HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::str
         glm::uvec2 HC::Window::GLFWWindow::GetSize() const {
             int width, height;
             glfwGetWindowSize(m_window, &width, &height);
-            return glm::uvec2(width, height);
+            return {width, height};
         }
 
         std::string& HC::Window::GLFWWindow::GetWindowName() {
@@ -85,7 +92,7 @@ HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::str
         glm::uvec2 HC::Window::GLFWWindow::GetPosition() const {
             int x, y;
             glfwGetWindowPos(m_window, &x, &y);
-            return glm::uvec2(x, y);
+            return {x, y};
         }
 
         HC::Window::WindowMode HC::Window::GLFWWindow::GetWindowMode() const {
@@ -101,8 +108,12 @@ HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::str
         }
 
         void HC::Window::GLFWWindow::SetSize(const glm::uvec2 &size) {
-            glfwSetWindowSize(m_window, size.x, size.y);
+            glfwSetWindowSize(m_window, static_cast<int>(size.x), static_cast<int>(size.y));
+#if HC_GRAPHIC_API_OPENGL
+            glViewport(0, 0, static_cast<int>(size.x), static_cast<int>(size.y));
+#endif
             m_windowSize = size;
+
         }
 
         void HC::Window::GLFWWindow::SetVSync(bool enabled) {
@@ -116,14 +127,14 @@ HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::str
         }
 
         void HC::Window::GLFWWindow::SetPosition(const glm::uvec2 &position) {
-            glfwSetWindowPos(m_window, position.x, position.y);
+            glfwSetWindowPos(m_window, static_cast<int>(position.x), static_cast<int>(position.y));
         }
 
         void HC::Window::GLFWWindow::SetWindowMode(HC::Window::WindowMode mode) {
             if (mode == WindowMode::Fullscreen) {
                 GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-                const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-                glfwSetWindowMonitor(m_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+                const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
+                glfwSetWindowMonitor(m_window, monitor, 0, 0, videoMode->width, videoMode->height, videoMode->refreshRate);
             } else if (mode == WindowMode::Windowed) {
                 glfwSetWindowMonitor(m_window, nullptr, 0, 0, m_windowSize.x, m_windowSize.y, 0);
             }
@@ -182,7 +193,6 @@ void HC::Window::GLFWWindow::DestroyIMGUI() {
             // Do Vulkan stuff here
 #endif
             ImGui::NewFrame();
-            ImGui::ShowDemoWindow();
     }
 
     void HC::Window::GLFWWindow::AfterIMGUIRendering() {
