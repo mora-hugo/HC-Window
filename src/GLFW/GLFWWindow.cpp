@@ -186,6 +186,14 @@ void HC::Window::GLFWWindow::DestroyIMGUI() {
     }
 
     void HC::Window::GLFWWindow::BeforeIMGUIRendering() {
+
+#if HC_USE_IMGUI
+    if (!m_imguiInitialized)
+    {
+        InitializeIMGUI();
+        m_imguiInitialized = true;
+    }
+#endif
 #if HC_GRAPHIC_API_OPENGL
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();

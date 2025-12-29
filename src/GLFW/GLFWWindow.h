@@ -72,13 +72,13 @@ namespace HC::Window {
 #if HC_USE_IMGUI
         void BeforeIMGUIRendering() override;
         void AfterIMGUIRendering() override;
-        void InitializeIMGUI() override;
 
 #endif
 
     private:
     void Initialize();
 #if HC_USE_IMGUI
+        void InitializeIMGUI() override;
         void DestroyIMGUI() override;
 #endif
     private:
@@ -89,6 +89,9 @@ namespace HC::Window {
         WindowMode m_windowMode;
         bool m_vsyncEnabled{};
 
+#if HC_USE_IMGUI
+    bool m_imguiInitialized = false;
+#endif
     };
 
 } // namespace HC::Window
