@@ -10,13 +10,6 @@ ThirdPartyLibCpp("HC-Window", {
         "include",
         "src"
     },
-    defines = {
-        "HC_WINDOW_STATIC",
-        "HC_WINDOW_BACKEND_GLFW",
-        "HC_GRAPHIC_API_OPENGL",
-        "HC_USE_IMGUI",
-        "IMGUI_IMPL_OPENGL_LOADER_GLAD"
-    },
     dependencies = {
         UseCommon,
         UseGlad,
