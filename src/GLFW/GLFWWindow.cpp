@@ -39,6 +39,8 @@ HC::Window::GLFWWindow::GLFWWindow(const glm::uvec2 & windowSize, const std::str
                 glViewport(0, 0, width, height);
                 #endif
             });
+
+            glfwWindowHint(GLFW_DEPTH_BITS, 24);
             
             SetVSync(true);
             SetCursorMode(CursorMode::Normal);
