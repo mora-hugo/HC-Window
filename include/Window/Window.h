@@ -27,6 +27,7 @@ namespace HC::Window {
             [[nodiscard]] virtual bool IsOpen() const = 0;
             [[nodiscard]] virtual bool IsVSyncEnabled() const = 0;
             [[nodiscard]] virtual glm::uvec2 GetSize() const = 0;
+            [[nodiscard]] virtual float GetAspectRatio() const = 0;
             [[nodiscard]] virtual std::string& GetWindowName() = 0;
             [[nodiscard]] virtual glm::uvec2 GetPosition() const = 0;
             [[nodiscard]] virtual WindowMode GetWindowMode() const = 0;

@@ -26,7 +26,7 @@
 #include <string>
 
 
-namespace HC::Window {
+namespace HC::Window::GLFW {
 
     class GLFWWindow : public Window {
     public:
@@ -44,6 +44,8 @@ namespace HC::Window {
         [[nodiscard]] bool IsVSyncEnabled() const override;
 
         [[nodiscard]] glm::uvec2 GetSize() const override;
+
+        [[nodiscard]] float GetAspectRatio() const override;
 
         std::string &GetWindowName() override;
 
@@ -67,6 +69,7 @@ namespace HC::Window {
 
         void SetCursorMode(CursorMode mode) override;
 
+        void OnSizeModified(const glm::uvec2 &size);
         void MakeContextCurrent() override;
 
 #if HC_USE_IMGUI
@@ -77,6 +80,11 @@ namespace HC::Window {
 
     private:
     void Initialize();
+
+    public:
+
+
+    private:
 #if HC_USE_IMGUI
         void InitializeIMGUI() override;
         void DestroyIMGUI() override;
@@ -87,6 +95,7 @@ namespace HC::Window {
         std::string m_windowName;
         CursorMode m_cursorMode;
         WindowMode m_windowMode;
+        float m_aspectRatio{};
         bool m_vsyncEnabled{};
 
 #if HC_USE_IMGUI
@@ -94,4 +103,4 @@ namespace HC::Window {
 #endif
     };
 
-} // namespace HC::Window
+} // namespace HC::Window::GLFW

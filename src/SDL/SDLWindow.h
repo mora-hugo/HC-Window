@@ -5,7 +5,7 @@
 #include <string>
 #include <glm/vec2.hpp>
 
-namespace HC::Window {
+namespace HC::Window::SDL {
 
     class SDLWindow : public Window {
     public:
@@ -47,4 +47,4 @@ namespace HC::Window {
         void recreateRenderer();  // helper pour toggler le VSync
     };
 
-} // namespace HC::Window
+} // namespace HC::Window::SDL

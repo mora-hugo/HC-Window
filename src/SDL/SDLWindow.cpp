@@ -4,7 +4,7 @@
 
     static bool s_sdlInitialized = false;
 
-    HC::Window::SDLWindow::SDLWindow(const glm::uvec2& windowSize, const std::string& windowName)
+    HC::Window::SDL::SDLWindow::SDLWindow(const glm::uvec2& windowSize, const std::string& windowName)
             : m_width(windowSize.x)
             , m_height(windowSize.y)
             , m_windowName(windowName)
@@ -33,73 +33,73 @@
         m_open = (m_renderer != nullptr);
     }
 
-    HC::Window::SDLWindow::~SDLWindow() {
+    HC::Window::SDL::SDLWindow::~SDLWindow() {
         Close();
     }
 
-    bool HC::Window::SDLWindow::IsOpen() const {
+    bool HC::Window::SDL::SDLWindow::IsOpen() const {
         // on considère la fenêtre ouverte tant que m_open est true
         return m_open;
     }
 
-    bool HC::Window::SDLWindow::IsVSyncEnabled() const {
+    bool HC::Window::SDL::SDLWindow::IsVSyncEnabled() const {
         return m_vsyncEnabled;
     }
 
-    glm::uvec2 HC::Window::SDLWindow::GetSize() const {
+    glm::uvec2 HC::Window::SDL::SDLWindow::GetSize() const {
         int w, h;
         SDL_GetWindowSize(m_window, &w, &h);
         return glm::uvec2(w, h);
     }
 
-    std::string& HC::Window::SDLWindow::GetWindowName() {
+    std::string& HC::Window::SDL::SDLWindow::GetWindowName() {
         return m_windowName;
     }
 
-    glm::uvec2 HC::Window::SDLWindow::GetPosition() const {
+    glm::uvec2 HC::Window::SDL::SDLWindow::GetPosition() const {
         int x, y;
         SDL_GetWindowPosition(m_window, &x, &y);
         return glm::uvec2(x, y);
     }
 
-    HC::Window::WindowMode HC::Window::SDLWindow::GetWindowMode() const {
+    HC::Window::WindowMode HC::Window::SDL::SDLWindow::GetWindowMode() const {
         return m_windowMode;
     }
 
-    bool HC::Window::SDLWindow::IsFullscreen() const {
+    bool HC::Window::SDL::SDLWindow::IsFullscreen() const {
         return m_windowMode == WindowMode::Fullscreen;
     }
 
-    HC::Window::CursorMode HC::Window::SDLWindow::GetCursorMode() const {
+    HC::Window::CursorMode HC::Window::SDL::SDLWindow::GetCursorMode() const {
         return m_cursorMode;
     }
 
-    WindowHandle HC::Window::SDLWindow::GetNativeHandle() const {
+    WindowHandle HC::Window::SDL::SDLWindow::GetNativeHandle() const {
         return reinterpret_cast<WindowHandle>(m_window);
     }
 
-    void HC::Window::SDLWindow::SetSize(const glm::uvec2& size) {
+    void HC::Window::SDL::SDLWindow::SetSize(const glm::uvec2& size) {
         SDL_SetWindowSize(m_window, size.x, size.y);
         m_width  = size.x;
         m_height = size.y;
     }
 
-    void HC::Window::SDLWindow::SetVSync(bool enabled) {
+    void HC::Window::SDL::SDLWindow::SetVSync(bool enabled) {
         if (m_vsyncEnabled == enabled) return;
         m_vsyncEnabled = enabled;
         recreateRenderer();
     }
 
-    void HC::Window::SDLWindow::SetWindowName(const std::string& name) {
+    void HC::Window::SDL::SDLWindow::SetWindowName(const std::string& name) {
         SDL_SetWindowTitle(m_window, name.c_str());
         m_windowName = name;
     }
 
-    void HC::Window::SDLWindow::SetPosition(const glm::uvec2& position) {
+    void HC::Window::SDL::SDLWindow::SetPosition(const glm::uvec2& position) {
         SDL_SetWindowPosition(m_window, position.x, position.y);
     }
 
-    void HC::Window::SDLWindow::SetWindowMode(WindowMode mode) {
+    void HC::Window::SDL::SDLWindow::SetWindowMode(WindowMode mode) {
         Uint32 sdlFlag = 0;
         if (mode == WindowMode::Fullscreen) {
             sdlFlag = SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -108,7 +108,7 @@
         m_windowMode = mode;
     }
 
-    void HC::Window::SDLWindow::SetCursorMode(HC::Window::CursorMode mode) {
+    void HC::Window::SDL::SDLWindow::SetCursorMode(HC::Window::CursorMode mode) {
         switch (mode) {
             case CursorMode::Normal:
                 SDL_ShowCursor(SDL_ENABLE);
@@ -126,7 +126,7 @@
         m_cursorMode = mode;
     }
 
-    void HC::Window::SDLWindow::Close() {
+    void HC::Window::SDL::SDLWindow::Close() {
         if (m_renderer) {
             SDL_DestroyRenderer(m_renderer);
             m_renderer = nullptr;
@@ -138,7 +138,7 @@
         m_open = false;
     }
 
-    void HC::Window::SDLWindow::PollEvents() {
+    void HC::Window::SDL::SDLWindow::PollEvents() {
         SDL_Event evt;
         while (SDL_PollEvent(&evt)) {
             switch (evt.type) {
@@ -157,17 +157,17 @@
         }
     }
 
-    void HC::Window::SDLWindow::SwapBuffers() {
+    void HC::Window::SDL::SDLWindow::SwapBuffers() {
         if (m_renderer) {
             SDL_RenderPresent(m_renderer);
         }
     }
 
-    void HC::Window::SDLWindow::MakeContextCurrent() {
+    void HC::Window::SDL::SDLWindow::MakeContextCurrent() {
         // NO Contexte needed
     }
 
-    void HC::Window::SDLWindow::recreateRenderer() {
+    void HC::Window::SDL::SDLWindow::recreateRenderer() {
         if (m_renderer) {
             SDL_DestroyRenderer(m_renderer);
             m_renderer = nullptr;

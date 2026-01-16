@@ -16,11 +16,11 @@ namespace HC::Window {
 
     Ref<Window> WindowFactory::CreateWindow(const WindowParams& params) {
 #ifdef HC_WINDOW_BACKEND_GLFW
-        return CreateRef<GLFWWindow>(params.size, params.name);
+        return CreateRef<GLFW::GLFWWindow>(params.size, params.name);
 #elif defined(HC_WINDOW_BACKEND_SDL)
-        return CreateRef<SDLWindow>(params.size, params.name);
+        return CreateRef<SDL::SDLWindow>(params.size, params.name);
 #elif defined(HC_WINDOW_BACKEND_WIN32)
-        return CreateRef<Win32Window>(params.size, params.name);
+        return CreateRef<Win32::Win32Window>(params.size, params.name);
 #else
 #error "No window backend defined!"
 #endif
